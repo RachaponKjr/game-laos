@@ -1,0 +1,47 @@
+services:
+  # --- NestJS API ---
+  api:
+    build:
+      context: ./backend-game
+      dockerfile: Dockerfile.prod
+    restart: always
+    env_file: .env
+    volumes:
+      # เก็บรูปภาพที่ user อัปโหลด (เช่น สลิปเติมเงิน)
+      - ./backend-game/uploads:/usr/src/app/uploads
+      # เก็บ logs ของระบบ
+      - ./backend-game/logs:/usr/src/app/logs
+    networks:
+      - prod-network
+
+  # --- Frontend (หน้าเว็บลูกค้า) ---
+  web:
+    build:
+      context: ./web-game-laos
+      dockerfile: Dockerfile.prod
+    ports:
+      - "80:80" # เข้าผ่าน http://localhost
+    restart: always
+    depends_on:
+      - api
+    env_file: .env
+    networks:
+      - prod-network
+
+  # --- Admin Dashboard ---
+  dashboard:
+    build:
+      context: ./dashboard-game
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8080:80" # เข้าผ่าน http://localhost:8080
+    restart: always
+    depends_on:
+      - api
+    env_file: .env
+    networks:
+      - prod-network
+
+networks:
+  prod-network:
+    driver: bridge
