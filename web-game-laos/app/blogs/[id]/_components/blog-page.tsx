@@ -17,6 +17,8 @@ export interface Blog {
   updatedAt: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
 const BlogDetailPage = async ({
   params,
 }: {
@@ -25,15 +27,15 @@ const BlogDetailPage = async ({
   const { id } = await params;
   // const blog = getBlogData(id || "1");
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}`);
+  const res = await fetch(`${API_URL}/blogs/${id}`);
   const blog: Blog = await res.json();
 
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}/view`, {
+  await fetch(`${API_URL}/blogs/${id}/view`, {
     method: "PATCH",
   });
 
   return (
-    <div className="min-h-screen bg-[#0b0c2a] pt-24 pb-20">
+    <div className="min-h-screen bg-[#0d0f4d] pt-24 pb-20">
       {/* 1. Hero Section */}
       <div className="relative h-[50vh] md:h-[60vh] w-full">
         <Image
