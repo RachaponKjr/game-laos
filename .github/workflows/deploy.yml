@@ -68,7 +68,6 @@ jobs:
             echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
             echo "NEXT_PUBLIC_PAYMENT_API_BASE=${{ secrets.NEXT_PUBLIC_PAYMENT_API_BASE }}" > .env
             echo "NEXT_PUBLIC_PAYMENT_API_KEY=${{ secrets.NEXT_PUBLIC_PAYMENT_API_KEY }}" > .env
-            echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
             echo "API_PREFIX=${{ secrets.API_PREFIX }}" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
