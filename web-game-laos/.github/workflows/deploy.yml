@@ -1,58 +1,45 @@
-name: Deploy Next.js site to Pages
+name: Deploy Next.js to Docker via SSH
 
 on:
   push:
-    branches: ["main"] # ตรวจสอบว่าชื่อ branch หลักของคุณคือ main หรือ master
+    branches: ["main"]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      # ขั้นตอนนี้จะช่วยสร้างไฟล์ .env หรือจัดการไฟล์ที่ไม่ต้องการให้ทับกัน (เช่น .db)
+      - name: Setup Environment
+        run: |
+          echo "NODE_ENV=production" > .env
+          # หากมีไฟล์ .db ให้แน่ใจว่ามันอยู่ใน .dockerignore เพื่อไม่ให้ทับของจริงบน Server
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # (Optional) ถ้าคุณใช้ Docker Hub หรือ Private Registry ให้ Login ที่นี่
+      # แต่ถ้าจะ Build แล้วส่งไฟล์ไปเฉยๆ หรือ Build บน Server เลย ให้ข้ามไปขั้นตอน SSH
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          version: 10 # ให้ตรงกับ pnpm@10.11.1 ที่คุณใช้
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # 1. เข้าไปที่โฟลเดอร์โปรเจกต์บน Server
+            cd /path/to/your/project 
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22" # ใช้ Node 22 ตาม Log ล่าสุดของคุณ
-          cache: "pnpm"
+            # 2. ดึง Code ล่าสุด (กรณีใช้ Git บน Server ด้วย)
+            git pull origin main
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+            # 3. สั่ง Build Image และ Restart Container
+            # --build จะช่วยให้ Docker สร้าง Image ใหม่ตาม Code ที่อัปเดต
+            docker-compose up -d --build
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build with Next.js
-        run: pnpm run build
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out # ชี้ไปที่โฟลเดอร์ out ที่เกิดจาก output: 'export'
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+            # 4. เคลียร์ Image เก่าๆ ที่ไม่ได้ใช้เพื่อประหยัดพื้นที่
+            docker image prune -f

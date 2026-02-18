@@ -1,19 +1,4 @@
 services:
-  # --- NestJS API ---
-  api:
-    build:
-      context: ./back-game
-      dockerfile: ./back-game/Dockerfile.prod
-    restart: always
-    env_file: .env
-    volumes:
-      # เก็บรูปภาพที่ user อัปโหลด (เช่น สลิปเติมเงิน)
-      - ./back-game/uploads:/usr/src/app/uploads
-      # เก็บ logs ของระบบ
-      - ./back-game/logs:/usr/src/app/logs
-    networks:
-      - prod-network
-
   # --- Frontend (หน้าเว็บลูกค้า) ---
   web:
     build:
