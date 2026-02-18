@@ -56,6 +56,7 @@ jobs:
 
             # 2. สร้างไฟล์ .env ใหม่จาก Secrets (กันข้อมูลรั่วไหล)
             # ใช้ > เพื่อทับไฟล์เดิม และ >> เพื่อเขียนต่อท้าย
+            echo "API_URL=${{ secrets.API_URL }}" > .env
             echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
             echo "NEXT_PUBLIC_PAYMENT_API_BASE=${{ secrets.NEXT_PUBLIC_PAYMENT_API_BASE }}" > .env
             echo "NEXT_PUBLIC_PAYMENT_API_KEY=${{ secrets.NEXT_PUBLIC_PAYMENT_API_KEY }}" > .env
