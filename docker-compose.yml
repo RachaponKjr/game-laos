@@ -14,18 +14,18 @@ services:
       - prod-network
 
   # --- Admin Dashboard ---
-  dashboard:
-    build:
-      context: ./dashboard-game
-      dockerfile: ./dashboard-game/Dockerfile.prod
-    ports:
-      - "8080:80" # เข้าผ่าน http://localhost:8080
-    restart: always
-    depends_on:
-      - api
-    env_file: .env
-    networks:
-      - prod-network
+  # dashboard:
+  #   build:
+  #     context: ./dashboard-game
+  #     dockerfile: ./dashboard-game/Dockerfile.prod
+  #   ports:
+  #     - "8080:80" # เข้าผ่าน http://localhost:8080
+  #   restart: always
+  #   depends_on:
+  #     - api
+  #   env_file: .env
+  #   networks:
+  #     - prod-network
 
 networks:
   prod-network:

@@ -30,15 +30,15 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/game-web:latest
 
       # Build & Push Dashboard
-      - name: Build and Push Dashboard
-        uses: docker/build-push-action@v5
-        with:
-          context: ./dashboard-game
-          file: ./dashboard-game/Dockerfile.prod
-          push: true
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/game-dashboard:latest
+      # - name: Build and Push Dashboard
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./dashboard-game
+      #     file: ./dashboard-game/Dockerfile.prod
+      #     push: true
+      #     build-args: |
+      #       NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+      #     tags: ${{ secrets.DOCKERHUB_USERNAME }}/game-dashboard:latest
 
   deploy:
     runs-on: ubuntu-latest
