@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { GamePackageType, GameType } from "@/types/game.type";
 import TopUpPage from "./_components/topup";
 
